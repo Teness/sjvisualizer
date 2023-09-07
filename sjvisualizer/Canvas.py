@@ -34,15 +34,16 @@ months = {
     12: "Dec",
 }
 
-random_colors = [(102,155,188),(168,198,134),(243,167,18),(41,51,92),(228,87,46),(255,155,113),(255,253,130),(45,48,71),(237,33,124),(27,153,139),(245,213,71),(219,48,105),(20,70,160),(0,0,200),(0,200,0),(200,0,0),(66,217,200),(44,140,153),(50,103,113),(40,70,75),(147,22,33),(208,227,127),(221,185,103),(209,96,61),(34,29,35),(97,87,113),(81,70,99),(77,83,130),(202,207,133),(140,186,128),(101,142,156)]
+random_colors = [(102, 155, 188), (168, 198, 134), (243, 167, 18), (41, 51, 92), (228, 87, 46), (255, 155, 113), (255, 253, 130), (45, 48, 71), (237, 33, 124), (27, 153, 139), (245, 213, 71), (219, 48, 105), (20, 70, 160), (0, 0, 200), (0, 200, 0),
+                 (200, 0, 0), (66, 217, 200), (44, 140, 153), (50, 103, 113), (40, 70, 75), (147, 22, 33), (208, 227, 127), (221, 185, 103), (209, 96, 61), (34, 29, 35), (97, 87, 113), (81, 70, 99), (77, 83, 130), (202, 207, 133), (140, 186, 128), (101, 142, 156)]
 
 if platform.system() == "Windows":
     SCALEFACTOR = ctypes.windll.shcore.GetScaleFactorForDevice(0) / 100
-elif platform.system() == "Darwin": # if OS is mac
+elif platform.system() == "Darwin":  # if OS is mac
     SCALEFACTOR = 1
-elif platform.system() == "Linux": # if OS is linux
+elif platform.system() == "Linux":  # if OS is linux
     SCALEFACTOR = 1
-else: # if OS can't be detected
+else:  # if OS can't be detected
     SCALEFACTOR = 1
 
 min_slice = 0.03
@@ -59,18 +60,20 @@ MAX_A = 4
 BUBBLE_PICTURE_SIZE = 0.2
 MIN_BUBBLE_DISTANCE = 0
 MIN_BUBBLE_FONT = 10
-BUBBLE_TOP = 20 # number of bubbles to display
+BUBBLE_TOP = 20  # number of bubbles to display
 format_str = '%d-%m-%Y'  # The format
 
 monitor = get_monitors()[0]
-HEIGHT = monitor.height
-WIDTH = monitor.width
+HEIGHT = 1920  # monitor.height
+WIDTH = 1028  # monitor.width
+
 
 class canvas():
     """Canvas to which all the graphs will be drawn
 
     :param bg: Background color in RGB, defaults to (255, 255, 255) (white)
     :type bg: tuple of length 3 with integers"""
+
     def __init__(self, width=None, height=None, bg=(255, 255, 255), colors={}):
         """
 
@@ -87,7 +90,8 @@ class canvas():
         else:
             height = height
 
-        self.canvas = Canvas(self.tk, width=width, height=height, bg=_from_rgb(bg))
+        self.canvas = Canvas(self.tk, width=width,
+                             height=height, bg=_from_rgb(bg))
         self.canvas.config(highlightthickness=0)
         self.tk.attributes("-fullscreen", True)
 
@@ -159,7 +163,8 @@ class canvas():
                 time.sleep(0.0001)
 
             time_used = time.time() - start
-            print("FPS: {}".format(format(1/time_used, ",.{}f".format(decimal_places))))
+            print("FPS: {}".format(
+                format(1/time_used, ",.{}f".format(decimal_places))))
 
     def add_title(self, text, color=(0, 0, 0)):
         """
@@ -172,8 +177,10 @@ class canvas():
         :type color: tuple of length 3 with integers
 
         """
-        title_font = font.Font(family=text_font, size=int(self.height/30/ SCALEFACTOR), weight="bold")
-        self.canvas.create_text(self.width/2, self.height/20, font=title_font, text=text, fill=_from_rgb(color))
+        title_font = font.Font(family=text_font, size=int(
+            self.height/60 / SCALEFACTOR), weight="bold")
+        self.canvas.create_text(
+            self.width/2, self.height/20, font=title_font, text=text, fill=_from_rgb(color))
 
     def add_sub_title(self, text, color=(0, 0, 0)):
         """
@@ -186,8 +193,10 @@ class canvas():
         :type color: tuple of length 3 with integers
 
         """
-        title_font = font.Font(family=text_font, size=int(self.height/45/ SCALEFACTOR), weight="bold")
-        self.canvas.create_text(self.width/2, self.height/11, font=title_font, text=text, fill=_from_rgb(color))
+        title_font = font.Font(family=text_font, size=int(
+            self.height/90 / SCALEFACTOR), weight="bold")
+        self.canvas.create_text(
+            self.width/2, self.height/11, font=title_font, text=text, fill=_from_rgb(color))
 
     def add_time(self, df, time_indicator="year", color=(150, 150, 150)):
         """
@@ -204,8 +213,8 @@ class canvas():
         """
         from sjvisualizer import Date
         sub_plot = Date.date(canvas=self.canvas, start_time=list(df.index)[0], width=0, height=self.height/12,
-                                       x_pos=self.width/10, y_pos=self.height*0.85, time_indicator=time_indicator,
-                                       font_color=color)
+                             x_pos=self.width/10, y_pos=self.height*0.85, time_indicator=time_indicator,
+                             font_color=color)
         self.add_sub_plot(sub_plot)
 
     def add_logo(self, logo):
@@ -217,18 +226,20 @@ class canvas():
         """
         from sjvisualizer import StaticImage
         img = StaticImage.static_image(canvas=self.canvas, width=int(self.width/15), height=int(self.width/15), x_pos=self.width*0.95,
-                                           y_pos=self.height*0.00,
-                                           file=logo, root=self.tk, anchor="ne")
+                                       y_pos=self.height*0.00,
+                                       file=logo, root=self.tk, anchor="ne")
         self.add_sub_plot(img)
 
     def _add_sj_logo(self):
         from sjvisualizer import StaticImage
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "Made with SJvisualzer.png")
+        path = os.path.join(os.path.dirname(os.path.abspath(
+            __file__)), "assets", "Made with SJvisualzer.png")
         img = StaticImage.static_image(canvas=self.canvas, width=int(self.width / 45), height=int(self.width / 45),
                                        x_pos=self.width * 0.95,
                                        y_pos=self.height * 0.95,
                                        file=path, root=self.tk, anchor="se")
         self.add_sub_plot(img)
+
 
 class sub_plot():
     """
@@ -252,7 +263,8 @@ class sub_plot():
     :param font_color: font color
     :type font_color: tuple of length 3 with integers
     """
-    def __init__(self, canvas=None, width=None, height=None, x_pos=None, y_pos=None, start_time=None, text=None, df=None, multi_color_df=None, anchor="c", sort=True, colors={}, root=None, display_percentages=True, display_label=True, title=None, invert=False, origin="s", display_value=True, font_color=(0,0,0), back_ground_color=(255,255,255), events={}, time_indicator="year", number_of_bars=None, unit="", x_ticks = 4, y_ticks = 4, log_scale=False, only_show_latest_event=True, allow_decrease=True, format="Europe", draw_points=True, area=True, color_bar_color=[[100, 100, 100], [255, 0, 0]], **kwargs):
+
+    def __init__(self, canvas=None, width=None, height=None, x_pos=None, y_pos=None, start_time=None, text=None, df=None, multi_color_df=None, anchor="c", sort=True, colors={}, root=None, display_percentages=True, display_label=True, title=None, invert=False, origin="s", display_value=True, font_color=(0, 0, 0), back_ground_color=(255, 255, 255), events={}, time_indicator="year", number_of_bars=None, unit="", x_ticks=4, y_ticks=4, log_scale=False, only_show_latest_event=True, allow_decrease=True, format="Europe", draw_points=True, area=True, color_bar_color=[[100, 100, 100], [255, 0, 0]], **kwargs):
         """
 
         """
@@ -287,7 +299,6 @@ class sub_plot():
             self.decimal_places = decimal_places
 
         self.allow_decrease = allow_decrease
-
 
         if isinstance(canvas, tkinter.Canvas):
             self.canvas = canvas
@@ -351,7 +362,8 @@ class sub_plot():
         self.color_bar_color = color_bar_color
 
         if title:
-            self.canvas.create_text(x_pos + width/2, y_pos - height/18, anchor = "s", text=title, font=font.Font(family=text_font, size=int(15 + self.height/60/ SCALEFACTOR), weight="bold"), fill=_from_rgb(self.font_color))
+            self.canvas.create_text(x_pos + width/2, y_pos - height/18, anchor="s", text=title, font=font.Font(
+                family=text_font, size=int(15 + self.height/60 / SCALEFACTOR), weight="bold"), fill=_from_rgb(self.font_color))
 
         if self.root:
             self.draw(self.start_time)
@@ -386,12 +398,14 @@ def format_date(time, time_indicator):
         return str("{} {} {}".format(time.day, months[time.month], time.year))
     return None
 
+
 def _from_rgb(rgb):
     rgb = list(rgb)
     for i, c in enumerate(rgb):
         if c < 0:
             rgb[i] = 0
     return "#%02x%02x%02x" % tuple(rgb)
+
 
 def truncate(n, decimals=1):
     # decimals = len(str(n))
@@ -401,6 +415,7 @@ def truncate(n, decimals=1):
     else:
         return 0
 
+
 def calc_spacing(value, current_spacing, n):
     if current_spacing * 4 < value:
         current_spacing = round(current_spacing * 2, -len(str(round(value)))+1)
@@ -408,15 +423,18 @@ def calc_spacing(value, current_spacing, n):
         current_spacing = 1
     return current_spacing
 
+
 def load_image(path, x, y, root, name):
     load = Image.open(path)
-    load = load.resize((int(x * load.size[0]/load.size[1]), int(y)), resample=2)
+    load = load.resize(
+        (int(x * load.size[0]/load.size[1]), int(y)), resample=2)
     load = ImageTk.PhotoImage(load)
     i = 0
     while hasattr(root, name + str(i)):
         i = i + 1
     setattr(root, name + str(i), load)
     return load
+
 
 def format_date(time, time_indicator, format="Europe"):
     # format date
@@ -426,11 +444,14 @@ def format_date(time, time_indicator, format="Europe"):
         text = str("{} {}".format(months[time.month], time.year))
     elif time_indicator == "day":
         if format == "USA":
-            text = str("{} {} {}".format(months[time.month], time.day, time.year))
+            text = str("{} {} {}".format(
+                months[time.month], time.day, time.year))
         else:
-            text = str("{} {} {}".format(time.day, months[time.month], time.year))
+            text = str("{} {} {}".format(
+                time.day, months[time.month], time.year))
 
     return text
+
 
 def format_value(number, decimal=decimal_places):
     units = ['k', 'm', 'b', 't']
@@ -445,6 +466,7 @@ def format_value(number, decimal=decimal_places):
         formatted_number += units[unit_index - 1]
 
     return formatted_number
+
 
 def hex_to_rgb(h):
     return tuple(int(h.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4))

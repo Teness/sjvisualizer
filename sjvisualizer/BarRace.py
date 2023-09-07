@@ -34,15 +34,16 @@ months = {
     12: "Dec",
 }
 
-random_colors = [(102,155,188),(168,198,134),(243,167,18),(41,51,92),(228,87,46),(255,155,113),(255,253,130),(45,48,71),(237,33,124),(27,153,139),(245,213,71),(219,48,105),(20,70,160),(0,0,200),(0,200,0),(200,0,0),(66,217,200),(44,140,153),(50,103,113),(40,70,75),(147,22,33),(208,227,127),(221,185,103),(209,96,61),(34,29,35),(97,87,113),(81,70,99),(77,83,130),(202,207,133),(140,186,128),(101,142,156)]
+random_colors = [(102, 155, 188), (168, 198, 134), (243, 167, 18), (41, 51, 92), (228, 87, 46), (255, 155, 113), (255, 253, 130), (45, 48, 71), (237, 33, 124), (27, 153, 139), (245, 213, 71), (219, 48, 105), (20, 70, 160), (0, 0, 200), (0, 200, 0),
+                 (200, 0, 0), (66, 217, 200), (44, 140, 153), (50, 103, 113), (40, 70, 75), (147, 22, 33), (208, 227, 127), (221, 185, 103), (209, 96, 61), (34, 29, 35), (97, 87, 113), (81, 70, 99), (77, 83, 130), (202, 207, 133), (140, 186, 128), (101, 142, 156)]
 
 if platform.system() == "Windows":
     SCALEFACTOR = ctypes.windll.shcore.GetScaleFactorForDevice(0) / 100
-elif platform.system() == "Darwin": # if OS is mac
+elif platform.system() == "Darwin":  # if OS is mac
     SCALEFACTOR = 1
-elif platform.system() == "Linux": # if OS is linux
+elif platform.system() == "Linux":  # if OS is linux
     SCALEFACTOR = 1
-else: # if OS can't be detected
+else:  # if OS can't be detected
     SCALEFACTOR = 1
 
 min_slice = 0.03
@@ -59,12 +60,13 @@ MAX_A = 4
 BUBBLE_PICTURE_SIZE = 0.2
 MIN_BUBBLE_DISTANCE = 0
 MIN_BUBBLE_FONT = 10
-BUBBLE_TOP = 20 # number of bubbles to display
+BUBBLE_TOP = 10  # number of bubbles to display
 format_str = '%d-%m-%Y'  # The format
 
 monitor = get_monitors()[0]
-HEIGHT = monitor.height
-WIDTH = monitor.width
+HEIGHT = 1920  # monitor.height
+WIDTH = 1028  # monitor.width
+
 
 class bar_race(cv.sub_plot):
     """
@@ -115,8 +117,10 @@ class bar_race(cv.sub_plot):
     :param number_of_bars: number of bars to display in the animation, default is 10 unless you have less than 10 data categories
     :type number_of_bars: int
     """
+
     def draw(self, time):
-        self.distance = self.height / (self.number_of_bars+(self.number_of_bars+1)*0.5)
+        self.distance = self.height / \
+            (self.number_of_bars+(self.number_of_bars+1)*0.5)
         self.bars = {}
 
         if not hasattr(self, "mode"):
@@ -154,7 +158,8 @@ class bar_race(cv.sub_plot):
                     data[name] = 0
 
         if isinstance(self.multi_color_df, pd.DataFrame):
-            data_multi_color = self._get_data_for_frame(time, df=self.multi_color_df)
+            data_multi_color = self._get_data_for_frame(
+                time, df=self.multi_color_df)
             self.multi_colors = {}
             for index in data_multi_color.index:
                 color_name = index.split("_")[-1]
@@ -163,7 +168,8 @@ class bar_race(cv.sub_plot):
             data_multi_color = None
             self.multi_colors = None
 
-        self.stripes = bar_stripes(self.canvas, self.y_pos, self.y_pos + self.height, data, self.x_pos + self.width/5, self.width*0.75, self.height, self.number_of_bars, self.invert, allow_decrease=self.allow_decrease)
+        self.stripes = bar_stripes(self.canvas, self.y_pos, self.y_pos + self.height, data, self.x_pos + self.width/5,
+                                   self.width*0.75, self.height, self.number_of_bars, self.invert, allow_decrease=self.allow_decrease)
 
         current_height = self.distance/2 + self.y_pos
         bar_number = 0
@@ -181,7 +187,8 @@ class bar_race(cv.sub_plot):
                 color = None
 
             if fraction > 0.0000001 and bar_number < self.number_of_bars and not name == "Other":
-                self.bars[name] = bar(name=name, canvas=self.canvas, x=self.x_pos + self.width/5, target_y=current_height, color=color, root=self.root, size=int(self.distance), width=fraction*self.width*0.75, radius=0, value=value, unit=self.unit, display_value=self.display_value, multi_colors=self.multi_colors, color_data=data_multi_color, font_color=self.font_color, mode=self.mode, colors=self.colors, decimal_places=self.decimal_places, font_scale=self.font_scale)
+                self.bars[name] = bar(name=name, canvas=self.canvas, x=self.x_pos + self.width/5, target_y=current_height, color=color, root=self.root, size=int(self.distance), width=fraction*self.width*0.75, radius=0, value=value, unit=self.unit,
+                                      display_value=self.display_value, multi_colors=self.multi_colors, color_data=data_multi_color, font_color=self.font_color, mode=self.mode, colors=self.colors, decimal_places=self.decimal_places, font_scale=self.font_scale)
                 current_height = current_height + 3 * self.distance / 2
                 bar_number = bar_number + 1
             else:
@@ -194,8 +201,8 @@ class bar_race(cv.sub_plot):
                                           target_y=self.distance/2 + self.y_pos + (self.number_of_bars) * 3 * self.distance / 2 + self.shift, color=color, root=self.root,
                                           size=int(self.distance), width=fraction*self.width*0.75, radius=0, unit=self.unit, display_value=self.display_value, multi_colors=self.multi_colors, color_data=data_multi_color, font_color=self.font_color, mode=self.mode, colors=self.colors, decimal_places=self.decimal_places, font_scale=self.font_scale)
 
-        self.rec = self.canvas.create_rectangle(self.x_pos - 145, self.y_pos + self.height + self.shift, self.x_pos + self.width, self.y_pos + self.height + 1.35 * self.distance + self.shift, fill = cv._from_rgb(self.back_ground_color), outline="")
-
+        self.rec = self.canvas.create_rectangle(self.x_pos - 145, self.y_pos + self.height + self.shift, self.x_pos + self.width,
+                                                self.y_pos + self.height + 1.35 * self.distance + self.shift, fill=cv._from_rgb(self.back_ground_color), outline="")
 
     def update(self, time):
         if self.invert:
@@ -224,7 +231,8 @@ class bar_race(cv.sub_plot):
         self.stripes.update(data)
 
         if isinstance(self.multi_color_df, pd.DataFrame):
-            data_multi_color = self._get_data_for_frame(time, df=self.multi_color_df)
+            data_multi_color = self._get_data_for_frame(
+                time, df=self.multi_color_df)
         else:
             data_multi_color = None
 
@@ -249,22 +257,26 @@ class bar_race(cv.sub_plot):
                         fraction = value / self.current_max
 
                 if fraction > 0.00000001 and bar_number < self.number_of_bars and not name == "Other":
-                    self.bars[name].update(target_y=current_height, width=fraction*self.width*0.75, value=value, color_data=data_multi_color)
+                    self.bars[name].update(target_y=current_height, width=fraction *
+                                           self.width*0.75, value=value, color_data=data_multi_color)
                     current_height = current_height + 3 * self.distance / 2
                     bar_number = bar_number + 1
                 else:
                     if self.origin == "s":
-                        self.bars[name].update(target_y=self.distance/2 + self.y_pos + (self.number_of_bars) * 3 * self.distance / 2 +  + self.shift, width=fraction*self.width*0.75, color_data=data_multi_color, value=value)
+                        self.bars[name].update(target_y=self.distance/2 + self.y_pos + (self.number_of_bars) * 3 * self.distance /
+                                               2 + + self.shift, width=fraction*self.width*0.75, color_data=data_multi_color, value=value)
                     elif self.origin == "n":
-                        self.bars[name].update(target_y=-500, width=fraction*self.width*0.75, color_data=data_multi_color, value=value)
+                        self.bars[name].update(
+                            target_y=-500, width=fraction*self.width*0.75, color_data=data_multi_color, value=value)
             else:
                 self.bars[name].delete()
 
         self.canvas.tag_raise(self.rec)
 
+
 class bar():
 
-    def __init__(self, name=None, canvas=None, color=None, root=None, target_y=0, x=100, size=10, width=0, radius=0, value=0, unit=None, display_value=True, multi_colors=None, color_data=None, font_color=(0,0,0), mode=None, colors=None, decimal_places=decimal_places, font_scale=1):
+    def __init__(self, name=None, canvas=None, color=None, root=None, target_y=0, x=100, size=10, width=0, radius=0, value=0, unit=None, display_value=True, multi_colors=None, color_data=None, font_color=(0, 0, 0), mode=None, colors=None, decimal_places=decimal_places, font_scale=1):
         self.mass = 2
         self.stiffness = 0.2 * size / 100
         self.damping = 0.6
@@ -299,9 +311,9 @@ class bar():
 
         self.font_color = font_color
 
-
         self.font_size = int(size/2 / SCALEFACTOR * font_scale)
-        self.font = font.Font(family=text_font, size=self.font_size, weight="bold")
+        self.font = font.Font(
+            family=text_font, size=self.font_size, weight="bold")
 
         self.target_y = target_y
         self.y = copy.copy(target_y)
@@ -313,13 +325,15 @@ class bar():
                 img = cv.load_image(os.path.join("assets", "Russia".replace("*", "") + ".png"), int(1.15 * self.size),
                                     int(1.15 * self.size), root, name)
             else:
-                img = cv.load_image(os.path.join("assets", self.name.replace("*", "") + ".png"), int(1.15*self.size), int(1.15*self.size), root, name)
+                img = cv.load_image(os.path.join("assets", self.name.replace(
+                    "*", "") + ".png"), int(1.15*self.size), int(1.15*self.size), root, name)
         except:
             print("No image for {}".format(self.name))
             img = None
 
         if not self.color:
-            color = tuple((random.randint(min_color, max_color), random.randint(min_color, max_color), random.randint(min_color + 30, max_color)))
+            color = tuple((random.randint(min_color, max_color), random.randint(
+                min_color, max_color), random.randint(min_color + 30, max_color)))
             self.color = cv._from_rgb(color)
 
             if colors:
@@ -329,7 +343,8 @@ class bar():
 
         self.image_obj = img
 
-        self.draw(target_y=target_y, width=width, img=img, value=value, color_data=color_data)
+        self.draw(target_y=target_y, width=width, img=img,
+                  value=value, color_data=color_data)
 
     def draw(self, target_y=0, width=0, img=None, value=0, color_data=None):
         self.last_width = width
@@ -337,7 +352,8 @@ class bar():
 
         if not isinstance(color_data, pd.core.series.Series):
             self.has_multi_color_data = False
-            self.bar = self._round_rectangle(self.x, self.y + self.size*0.15, self.x + width, self.y + self.size*1.3, fill=self.color, width=0)
+            self.bar = self._round_rectangle(
+                self.x, self.y + self.size*0.15, self.x + width, self.y + self.size*1.3, fill=self.color, width=0)
             # self.canvas.tag_lower(self.bar)
         else:
             self.has_multi_color_data = False
@@ -350,15 +366,18 @@ class bar():
                 current_x = self.x
                 for index in color_data.index:
                     if index.split("_")[0] == self.name:
-                        color = cv._from_rgb(tuple(self.multi_colors[index.split("_")[-1]]))
-                        self.bars.append(self.canvas.create_rectangle(current_x, self.y + self.size*0.15, current_x + width * color_data[index] / 100, self.y + self.size*1.3, fill=color, width=0))
+                        color = cv._from_rgb(
+                            tuple(self.multi_colors[index.split("_")[-1]]))
+                        self.bars.append(self.canvas.create_rectangle(current_x, self.y + self.size*0.15, current_x +
+                                         width * color_data[index] / 100, self.y + self.size*1.3, fill=color, width=0))
                         current_x = current_x + width * color_data[index] / 100
             else:
                 self.bar = self._round_rectangle(self.x, self.y + self.size * 0.15, self.x + width,
                                                  self.y + self.size * 1.3, fill=self.color, width=0)
 
         if img:
-            self.img = self.canvas.create_image(self.x + width + 10, self.y + self.size*0.15, image=img, anchor="nw")
+            self.img = self.canvas.create_image(
+                self.x + width + 10, self.y + self.size*0.15, image=img, anchor="nw")
         else:
             self.img = None
 
@@ -367,7 +386,8 @@ class bar():
                 self.draw_in_bar = True
                 self.frame_in_bar = 0
                 self.frame_not_in_bar = 0
-                self.value = self.canvas.create_text(self.x + width - self.size*0.25, target_y + (self.size)/3, text=str(self.money) + format(value, ",.{}f".format(self.decimal_places)) + str(self.unit), anchor="ne", font=self.font, fill=cv._from_rgb((255,255,255)))
+                self.value = self.canvas.create_text(self.x + width - self.size*0.25, target_y + (self.size)/3, text=str(self.money) + format(
+                    value, ",.{}f".format(self.decimal_places)) + str(self.unit), anchor="ne", font=self.font, fill=cv._from_rgb((255, 255, 255)))
             else:
                 self.draw_in_bar = False
                 self.frame_not_in_bar = 0
@@ -460,36 +480,47 @@ class bar():
             self.v = self.v + self.a
             self.y = self.y + self.v
 
-            self.last_frame = str(self.money) + format(value, ",.{}f".format(self.decimal_places)) + str(self.unit) + str(self.x + width + self.size*1.5)
+            self.last_frame = str(self.money) + format(value, ",.{}f".format(
+                self.decimal_places)) + str(self.unit) + str(self.x + width + self.size*1.5)
 
-            self.canvas.coords(self.text, self.x - 10, self.y + (self.size)/3 + (1 - self.font_scale) * self.size / 2)
+            self.canvas.coords(self.text, self.x - 10, self.y +
+                               (self.size)/3 + (1 - self.font_scale) * self.size / 2)
 
             if self.display_value:
                 # when the value should be drawn in the bar
                 if self.canvas.bbox(self.value)[2] - self.canvas.bbox(self.value)[0] < 0.75 * width:
-                    self.canvas.coords(self.value, self.x + width - self.size*0.25, self.y + (self.size)/3+ (1 - self.font_scale) * self.size / 2)
-                    self.canvas.itemconfig(self.value, fill=cv._from_rgb((255, 255, 255)), anchor="ne")
+                    self.canvas.coords(self.value, self.x + width - self.size*0.25,
+                                       self.y + (self.size)/3 + (1 - self.font_scale) * self.size / 2)
+                    self.canvas.itemconfig(self.value, fill=cv._from_rgb(
+                        (255, 255, 255)), anchor="ne")
                 # when the value should be drawn outside of the bar
                 else:
                     if self.img:
-                        self.canvas.coords(self.value, self.x + width + 0.5 * self.size + self.image_obj.width(), self.y + (self.size) / 3+ (1 - self.font_scale) * self.size / 2)
+                        self.canvas.coords(self.value, self.x + width + 0.5 * self.size + self.image_obj.width(
+                        ), self.y + (self.size) / 3 + (1 - self.font_scale) * self.size / 2)
                     else:
-                        self.canvas.coords(self.value, self.x + width + 0.25 * self.size, self.y + (self.size) / 3+ (1 - self.font_scale) * self.size / 2)
-                    self.canvas.itemconfig(self.value, fill=cv._from_rgb(self.font_color), anchor="nw")
+                        self.canvas.coords(self.value, self.x + width + 0.25 * self.size, self.y + (
+                            self.size) / 3 + (1 - self.font_scale) * self.size / 2)
+                    self.canvas.itemconfig(self.value, fill=cv._from_rgb(
+                        self.font_color), anchor="nw")
 
                 if not self.last_value == value:
-                    self.canvas.itemconfig(self.value, text=str(self.money) + format(value, ",.{}f".format(self.decimal_places)) + str(self.unit))
+                    self.canvas.itemconfig(self.value, text=str(
+                        self.money) + format(value, ",.{}f".format(self.decimal_places)) + str(self.unit))
 
             if abs(target_y - self.y) > 1 or not self.last_width == width:
                 if not self.has_multi_color_data:
-                    self._update_round_rectangle(self.x, self.y + self.size*0.15, self.x + width, self.y + self.size*1.3)
+                    self._update_round_rectangle(
+                        self.x, self.y + self.size*0.15, self.x + width, self.y + self.size*1.3)
                 else:
                     current_x = self.x
                     i = 0
                     for index in color_data.index:
                         if index.split("_")[0] == self.name:
-                            self.canvas.coords(self.bars[i], current_x, self.y + self.size * 0.15, current_x + width * color_data[index] / 100, self.y + self.size * 1.3)
-                            current_x = current_x + width * color_data[index] / 100
+                            self.canvas.coords(self.bars[i], current_x, self.y + self.size * 0.15,
+                                               current_x + width * color_data[index] / 100, self.y + self.size * 1.3)
+                            current_x = current_x + width * \
+                                color_data[index] / 100
                             i = i + 1
             elif self.has_multi_color_data:
                 current_x = self.x
@@ -505,10 +536,12 @@ class bar():
             self.last_value = value
 
             if self.img:
-                self.canvas.coords(self.img, self.x + width + 10, self.y + self.size*0.15)
+                self.canvas.coords(self.img, self.x + width +
+                                   10, self.y + self.size*0.15)
 
         elif value and self.bar == None:
-            self.draw(target_y=target_y, width=width, img=self.image_obj, value=value, color_data=None)
+            self.draw(target_y=target_y, width=width,
+                      img=self.image_obj, value=value, color_data=None)
 
         elif value == 0:
             self.delete()
@@ -527,6 +560,7 @@ class bar():
             self.canvas.delete(self.bar)
             self.bar = None
 
+
 class bar_stripes():
 
     def __init__(self, canvas, y_min, y_max, row, x, width, height, number_of_bars, invert, allow_decrease=True):
@@ -541,7 +575,8 @@ class bar_stripes():
         self.y_min = y_min
         self.y_max = y_max
 
-        self.font = font.Font(family=text_font, size=int(height/40/SCALEFACTOR), weight="bold")
+        self.font = font.Font(family=text_font, size=int(
+            height/40/SCALEFACTOR), weight="bold")
 
         self.width = width
 
@@ -561,7 +596,8 @@ class bar_stripes():
 
         self.current_max = max
 
-        self.spacing = cv.truncate(max / self.N, 1 - len(str(int(cv.truncate(max / self.N, 0)))))
+        self.spacing = cv.truncate(
+            max / self.N, 1 - len(str(int(cv.truncate(max / self.N, 0)))))
 
         for i in range(1, self.N * 2 + 1):
             value = i * self.spacing
@@ -571,10 +607,13 @@ class bar_stripes():
             if value > max:
                 self.lines["lines"].append(
                     self.canvas.create_line(x_pos, self.y_min, x_pos, self.y_max, fill=""))
-                self.lines["text"].append(self.canvas.create_text(x_pos, self.y_min, text="", fill="", anchor="s", font=self.font))
+                self.lines["text"].append(self.canvas.create_text(
+                    x_pos, self.y_min, text="", fill="", anchor="s", font=self.font))
             else:
-                self.lines["lines"].append(self.canvas.create_line(x_pos, self.y_min, x_pos, self.y_max, fill=self.color))
-                self.lines["text"].append(self.canvas.create_text(x_pos, self.y_min, text=format(value, ",.{}f".format(decimal_places)), fill=self.color, anchor="s", font=self.font))
+                self.lines["lines"].append(self.canvas.create_line(
+                    x_pos, self.y_min, x_pos, self.y_max, fill=self.color))
+                self.lines["text"].append(self.canvas.create_text(x_pos, self.y_min, text=format(
+                    value, ",.{}f".format(decimal_places)), fill=self.color, anchor="s", font=self.font))
 
     def update(self, row):
         if self.invert:
@@ -586,7 +625,6 @@ class bar_stripes():
                 self.current_max = row.max()
 
             max = self.current_max
-
 
         self.spacing = cv.calc_spacing(max, self.spacing, self.N)
         # self.spacing = 5
@@ -606,10 +644,13 @@ class bar_stripes():
                 self.canvas.itemconfig(self.lines["lines"][i-1], fill="")
                 self.canvas.itemconfig(self.lines["text"][i-1], fill="")
             else:
-                self.canvas.itemconfig(self.lines["lines"][i-1], fill=self.color)
-                self.canvas.itemconfig(self.lines["text"][i-1], text=format(value, ",.{}f".format(decimal_places)), fill=self.color)
+                self.canvas.itemconfig(
+                    self.lines["lines"][i-1], fill=self.color)
+                self.canvas.itemconfig(self.lines["text"][i-1], text=format(
+                    value, ",.{}f".format(decimal_places)), fill=self.color)
 
-            self.canvas.coords(self.lines["lines"][i-1], x_pos, self.y_min, x_pos, self.y_max)
+            self.canvas.coords(
+                self.lines["lines"][i-1], x_pos, self.y_min, x_pos, self.y_max)
             self.canvas.coords(self.lines["text"][i-1], x_pos, self.y_min)
 
             # self.canvas.tag_lower(self.lines["lines"][i-1])
